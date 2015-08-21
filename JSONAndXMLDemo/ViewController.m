@@ -75,6 +75,11 @@
             } else {
                 self.countryDetailsDictionary = [[returnedDict objectForKey:@"geonames"] objectAtIndex:0];
                 NSLog(@"%@", self.countryDetailsDictionary);
+                self.lblCountry.text = [NSString stringWithFormat:@"%@ (%@)", [self.countryDetailsDictionary objectForKey:@"countryName"], [self.countryDetailsDictionary objectForKey:@"countryCode"]];
+                self.lblCountry.textAlignment = NSTextAlignmentCenter;
+                
+                [self.tblCountryDetails reloadData];
+                self.tblCountryDetails.hidden = NO;
             }
         }
     }];
