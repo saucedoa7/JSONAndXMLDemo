@@ -8,14 +8,44 @@
 
 #import "AppDelegate.h"
 
+NSString *const kUsername = @"saucedoa7";
+
 @implementation AppDelegate
+
++(void)downloadDataFromURL:(NSURL *)url withCompletionHandeler:(void (^)(NSData *))completionHandeler{
+    //Instantiate a session configuation session
+    NSURLSessionConfiguration *urlSessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    
+    //instantiate a session object
+    NSURLSession *urlSession = [NSURLSession sessionWithConfiguration:urlSessionConfig];
+    
+    //Create a data task object to perform the data downloading
+    NSURLSessionDataTask *task = [urlSession dataTaskWithURL:url
+                                           completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                               if (error != nil) {
+                                                   NSLog(@"%@", [error localizedDescription]); //Log error description
+                                               } else {
+                                                   NSInteger httpStatusCode = [(NSHTTPURLResponse *)response statusCode]; // Check Error code
+                                                   
+                                                   if (httpStatusCode != 200) {
+                                                       NSLog(@"Http Status Code %ld", (long)httpStatusCode); //Display Code
+                                                   }
+                                                   // Call the comp handler w/ the returned data in the main thread
+                                                   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                                                       completionHandeler(data);
+                                                   }];
+                                               }
+                                           }];
+    //Resume task
+    [task resume];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
     return YES;
 }
-							
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -24,7 +54,7 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 

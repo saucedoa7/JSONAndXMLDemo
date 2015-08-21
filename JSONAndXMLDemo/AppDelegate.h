@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSString *const kUsername;
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+
++(void)downloadDataFromURL:(NSURL *)url withCompletionHandeler:(void(^)(NSData *data))completionHandeler;
 
 @end
