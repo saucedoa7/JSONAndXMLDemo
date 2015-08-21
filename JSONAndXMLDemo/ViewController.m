@@ -88,7 +88,10 @@
 
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    
+    if ([segue.identifier isEqualToString:@"idSegueNeighbours"]) {
+        NeighboursViewController *NVC = [segue destinationViewController];
+        NVC.geoNameID = [self.countryDetailsDictionary objectForKeyedSubscript:@"geonameId"];
+    }
 }
 
 
@@ -225,8 +228,18 @@
     NSString *jsonStrng = [[NSString alloc] initWithData:data
                                                 encoding:NSUTF8StringEncoding];
     
-    NSLog(@"JSON Data %@", jsonStrng);
-    
+    if ([MFMailComposeViewController canSendMail]) {
+        
+        MFMailComposeViewController *mailVC = [MFMailComposeViewController new];
+        mailVC.mailComposeDelegate = self;
+        
+        NSString *subject = [NSString stringWithFormat:@"More bullshit of %@", [self.countryDetailsDictionary objectForKey:@"countryName"]];
+
+        [mailVC setSubject: subject];
+        [mailVC setMessageBody:jsonStrng isHTML:NO];
+        
+        [self presentViewController:mailVC animated:YES completion:nil];        
+    }
 }
 
 

@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 
 @interface NeighboursViewController ()
-
+-(void)downLoadNeibouringCountries;
 @end
 
 @implementation NeighboursViewController
@@ -33,12 +33,23 @@
     // Make self the delegate and datasource of the table view.
     self.tblNeighbours.delegate = self;
     self.tblNeighbours.dataSource = self;
+    
+    [self downLoadNeibouringCountries];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+-(void)downLoadNeibouringCountries{
+    
+    NSString *urlString = [NSString stringWithFormat:@"http://api.geonames.org/neighbours?geonameId=%@&username=%@", self.geoNameID, kUsername];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    //Download the data
+    
+    [AppDelegate downloadDataFromURL:url withCompletionHandeler:^(NSData *data) {
+        if (data != nil) {
+            //
+        }
+    }];
+    
 }
 
 /*
